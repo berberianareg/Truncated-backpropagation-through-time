@@ -16,7 +16,9 @@ Comments
 """
 
 #%% import libraries and modules
+import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 #%% build BPTT class
 class BPTT:
@@ -83,6 +85,7 @@ class BPTT:
         
     def fit(self):
         """Fit model to training data."""
+        losses = []
         iteration_count = 0
         sequence_pointer = 0
         while iteration_count <= self.num_training_iterations:
@@ -93,6 +96,7 @@ class BPTT:
             target_indices = [character_to_index[character] for character in data[sequence_pointer+1: sequence_pointer+self.sequence_length+1]] # specify target indices
             """Compute loss."""
             loss, dw_input_hidden, dw_hidden_hidden, dw_hidden_output, dbias_hidden, dbias_output, hidden_states, hidden_prev = self.compute_loss(input_indices, target_indices, hidden_prev)
+            losses.append(loss)
             """Update weights and biases."""
             self.w_input_hidden += -self.learning_rate * dw_input_hidden # input-to-hidden
             self.w_hidden_hidden += -self.learning_rate * dw_hidden_hidden # hidden-to-hidden
@@ -107,7 +111,7 @@ class BPTT:
                 print('next predictions: {}'.format(''.join(actual_predictions)))
             sequence_pointer += self.sequence_length
             iteration_count += 1
-        return hidden_states, input_indices, target_indices
+        return hidden_states, input_indices, target_indices, losses
     
     def predict(self, seed_index, input_indices, hidden_state, num_predictions):
         """Perform model predictions."""
@@ -146,7 +150,23 @@ model = BPTT(
     sequence_length=25)
 
 #%% fit model to training data
-hidden_states, input_indices, target_indices = model.fit()
+hidden_states, input_indices, target_indices, losses = model.fit()
+
+#%% specify filepath
+cwd = os.getcwd() # get current working directory
+fileName = 'images' # specify filename
+
+if os.path.exists(os.path.join(cwd, fileName)) == False: # if path does not exist
+    os.makedirs(fileName) # create directory with specified filename
+
+#%% plot loss
+fig, ax = plt.subplots()
+plt.plot(losses, label='training')
+plt.xlabel('Iteration #')
+plt.ylabel('Loss')
+plt.legend()
+plt.tight_layout()
+fig.savefig(os.path.join(cwd + '/' + fileName, 'figure_1'))
 
 #%% perform model predictions
 # seed_index = 0 # choose any value between 0 and sequence_length-1

@@ -4,11 +4,16 @@
 
 ### Table of Contents
 
+- [Images](#images)
 - [Description](#description)
 - [Keywords](#keywords)
 - [How to Use](#how-to-use)
 - [References](#references)
 - [Author Info](#author-info)
+
+## Images
+
+![](images/figure_1.png)
 
 ## Description
 
