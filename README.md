@@ -47,6 +47,8 @@ see requirements.txt
 
 `pip install numpy`
 
+`pip install matplotlib`
+
 #### Executing the program from command line
 
 `python BPTT.py`
